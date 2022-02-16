@@ -19,7 +19,7 @@ public class RadialMenu : MonoBehaviour
 
     private void Start()
     {
-        BuildMenu();
+        //BuildMenu();
     }
 
     private void OnValidate()
@@ -37,8 +37,8 @@ public class RadialMenu : MonoBehaviour
     [ContextMenu("Build Menu")]
     void BuildMenu()
     {
-        if(_fractions != null)
-        foreach (var f in _fractions)
+        var frac = GetComponentsInChildren<RadialMenuFraction>();
+        foreach (var f in frac)
         {
                 if(f != null)
                     DestroyImmediate(f.gameObject);
