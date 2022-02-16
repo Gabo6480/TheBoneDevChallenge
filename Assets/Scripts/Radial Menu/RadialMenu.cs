@@ -14,9 +14,6 @@ public class RadialMenu : MonoBehaviour
 
     protected RadialMenuFraction[] _fractions;
 
-    [Header("References")]
-    [SerializeField] Transform _mask;
-
     private void Start()
     {
         //BuildMenu();
@@ -55,8 +52,6 @@ public class RadialMenu : MonoBehaviour
             _fractions[i] = Instantiate(_radialMenuFractionPrefab, transform);
 
             SetFractionAppereance(_fractions[i], _elements[i], i, stepAngle);
-
-            _fractions[i].transform.SetParent(_mask, true);
         }
     }
 
