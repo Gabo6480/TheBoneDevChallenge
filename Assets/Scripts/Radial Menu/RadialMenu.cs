@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class RadialMenu : MonoBehaviour
+public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 {
     [Header("Settings")]
     [SerializeField] RadialMenuElement[] _elements;
@@ -20,11 +21,14 @@ public class RadialMenu : MonoBehaviour
 
     [Header("References")]
     [SerializeField] Transform _elementParent;
+    [SerializeField] RectTransform _rotationRect;
 
     [SerializeField] RadialMenuFraction[] _fractions;
 
     float _stepAngle;
     int _currentSelected = 0;
+    bool _isDragging = false;
+
     private void Start()
     {
         //BuildMenu();
@@ -38,7 +42,8 @@ public class RadialMenu : MonoBehaviour
 
             _fractions[i].Button.onClick.AddListener(() => {
                 //Debug.Log(aux);
-                SelectItem(aux);
+                if(!_isDragging)
+                    SelectItem(aux);
             });
         }
 
@@ -111,25 +116,62 @@ public class RadialMenu : MonoBehaviour
     {
         RotateElementParent(-(index - 1) * _stepAngle);
 
-        for (int j = 0; j < _fractions.Length; j++)
-        {
-            _fractions[j].SetIsSelected(j == index);
-        }
+        UpdateFractionsIsSelected(index);
 
         _currentSelected = index;
     }
 
+    void UpdateFractionsIsSelected(int index)
+    {
+        for (int j = 0; j < _fractions.Length; j++)
+        {
+            _fractions[j].SetIsSelected(j == index);
+        }
+    }
+
     public void SelectionUp()
     {
-        SelectItem((_currentSelected + 1) % _fractions.Length);
+        if (!_isDragging)
+            SelectItem((_currentSelected + 1) % _fractions.Length);
     }
     public void SelectionDown()
     {
-        SelectItem((_currentSelected - 1 + _fractions.Length) % _fractions.Length);
+        if (!_isDragging)
+            SelectItem((_currentSelected - 1 + _fractions.Length) % _fractions.Length);
     }
 
     void RotateElementParent(float targetAngle)
     {
         _elementParent.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, targetAngle), 0.3f).SetUpdate(true).SetEase(_rotationEase);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        _isDragging = true;
+
+        Vector2 local;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(_rotationRect, eventData.position, eventData.pressEventCamera, out local);
+        Vector2 localdelta;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(_rotationRect, eventData.position - eventData.delta, eventData.pressEventCamera, out localdelta);
+
+        float angleDelta = Vector2.SignedAngle(local, localdelta);
+
+        _elementParent.rotation *= Quaternion.Euler(0, 0, -angleDelta);
+
+        int selected = Mathf.RoundToInt(1f + _elementParent.rotation.eulerAngles.z / -_stepAngle);
+
+        //Normalize the index since the previous math can return negative indexes
+        UpdateFractionsIsSelected((selected + _fractions.Length) % _fractions.Length);
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        _isDragging = false;
+        
+        //Once the draggins is done, calculate which item is closest to the top
+        int selected = Mathf.RoundToInt( 1f + _elementParent.rotation.eulerAngles.z / -_stepAngle);
+
+        //Normalize the index since the previous math can return negative indexes
+        SelectItem((selected + _fractions.Length) % _fractions.Length);
     }
 }

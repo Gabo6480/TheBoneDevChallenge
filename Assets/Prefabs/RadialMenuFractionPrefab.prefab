@@ -65,6 +65,9 @@ MonoBehaviour:
   CircleRect: {fileID: 5015520523950200895}
   Name: {fileID: 403693378341946814}
   Button: {fileID: 7041835089967362196}
+  _selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  _unSelectedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _selectedTargetScale: 1.05
 --- !u!1 &8243931434969264041
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,7 +322,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}

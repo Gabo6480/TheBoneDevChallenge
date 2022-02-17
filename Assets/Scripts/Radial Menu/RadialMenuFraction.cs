@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class RadialMenuFraction : MonoBehaviour
+public class RadialMenuFraction : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Image Icon;
     public Image Circle;
@@ -21,6 +22,12 @@ public class RadialMenuFraction : MonoBehaviour
 
     bool _isSelected = false;
 
+    Tween hoverColorTween;
+    Tween hoverScaleTween;
+
+    Tween selectedColorTween;
+    Tween selectedScaleTween;
+
     private void Start()
     {
         Circle.color = _unSelectedColor;
@@ -36,18 +43,48 @@ public class RadialMenuFraction : MonoBehaviour
 
     public void SetIsSelected(bool value)
     {
+        if (_isSelected == value)
+            return;
+
         _isSelected = value;
+
+        selectedColorTween.Kill();
+        selectedScaleTween.Kill();
 
         if (_isSelected)
         {
-            Circle.DOColor(_selectedColor, 0.2f).SetDelay(0.1f);
-            transform.DOScale(Vector3.one *  _selectedTargetScale, 0.2f).SetDelay(0.1f);
+            selectedColorTween = Circle.DOColor(_selectedColor, 0.2f).SetDelay(0.1f);
+            selectedScaleTween = transform.DOScale(Vector3.one *  _selectedTargetScale, 0.2f).SetDelay(0.1f);
         }
         else
         {
-            Circle.DOColor(_unSelectedColor, 0.2f);
-            transform.DOScale(Vector3.one * _originalCircleScale, 0.2f).SetDelay(0.1f);
+            selectedColorTween = Circle.DOColor(_unSelectedColor, 0.2f);
+            selectedScaleTween = transform.DOScale(Vector3.one * _originalCircleScale, 0.2f);
         }
 
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (_isSelected)
+            return;
+
+        hoverColorTween.Kill();
+        hoverScaleTween.Kill();
+
+        hoverColorTween = Circle.DOColor(Color.Lerp(_selectedColor, _unSelectedColor, 0.5f), 0.2f);
+        hoverScaleTween = transform.DOScale(Vector3.one * Mathf.Lerp(_selectedTargetScale, _originalCircleScale, 0.5f), 0.2f);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if(_isSelected)
+            return;
+
+        hoverColorTween.Kill();
+        hoverScaleTween.Kill();
+
+        hoverColorTween = Circle.DOColor(_unSelectedColor, 0.1f);
+        hoverScaleTween = transform.DOScale(Vector3.one * _originalCircleScale, 0.2f);
     }
 }
