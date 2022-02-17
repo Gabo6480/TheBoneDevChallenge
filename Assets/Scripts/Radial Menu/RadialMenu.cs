@@ -103,13 +103,13 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
         fraction.Icon.transform.localScale = Vector3.one * _iconScale;
 
         //temp
-        fraction.Name.text = index.ToString();
+        fraction.Name.text = index.ToString() + " index";
 
         if (element == null)
             return;
 
         fraction.Icon.sprite = element.Icon;
-        //fraction.Name.text = element.Name;
+        fraction.Name.text = element.Name;
     }
 
     void SelectItem(int index)

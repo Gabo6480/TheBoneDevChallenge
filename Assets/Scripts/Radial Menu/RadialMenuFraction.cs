@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using TMPro;
 
 public class RadialMenuFraction : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Image Icon;
     public Image Circle;
     public RectTransform CircleRect;
-    public Text Name;
+    public TMP_Text Name;
     public Button Button;
 
     [Header("Appereance")]
