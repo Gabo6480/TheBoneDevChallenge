@@ -26,7 +26,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] RadialMenuFraction[] _fractions;
 
     float _stepAngle;
-    int _currentSelected = 0;
+    int _currentSelected = int.MaxValue;
     bool _isDragging = false;
 
     private void Start()
@@ -114,6 +114,15 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
     void SelectItem(int index)
     {
+        if (_currentSelected == index)
+            return;
+
+        if (!_fractions[index].gameObject.activeInHierarchy)
+        {
+            SelectItem(NormalizeIndex(index + (NormalizeIndex(index - 1) > NormalizeIndex(_currentSelected - 1) ? 1 : -1)));
+            return;
+        }
+
         RotateElementParent(-(index - 1) * _stepAngle);
 
         UpdateFractionsIsSelected(index);
@@ -132,12 +141,12 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
     public void SelectionUp()
     {
         if (!_isDragging)
-            SelectItem((_currentSelected + 1) % _fractions.Length);
+            SelectItem(NormalizeIndex(_currentSelected + 1));
     }
     public void SelectionDown()
     {
         if (!_isDragging)
-            SelectItem((_currentSelected - 1 + _fractions.Length) % _fractions.Length);
+            SelectItem(NormalizeIndex(_currentSelected - 1));
     }
 
     void RotateElementParent(float targetAngle)
@@ -161,7 +170,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
         int selected = Mathf.RoundToInt(1f + _elementParent.rotation.eulerAngles.z / -_stepAngle);
 
         //Normalize the index since the previous math can return negative indexes
-        UpdateFractionsIsSelected((selected + _fractions.Length) % _fractions.Length);
+        UpdateFractionsIsSelected(NormalizeIndex(selected));
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -172,6 +181,8 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
         int selected = Mathf.RoundToInt( 1f + _elementParent.rotation.eulerAngles.z / -_stepAngle);
 
         //Normalize the index since the previous math can return negative indexes
-        SelectItem((selected + _fractions.Length) % _fractions.Length);
+        SelectItem(NormalizeIndex(selected));
     }
+
+    int NormalizeIndex(int index) => (index + _fractions.Length) % _fractions.Length;
 }
