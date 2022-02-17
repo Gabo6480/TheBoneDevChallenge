@@ -3,9 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using UnityEngine.Events;
 
 public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 {
+
+    [System.Serializable]
+    struct RadialMenuElement
+    {
+        [SerializeField] public string Name;
+        [SerializeField] public Sprite Icon;
+        [SerializeField] public UnityEvent Callback;
+    }
+
     [Header("Settings")]
     [SerializeField] RadialMenuElement[] _elements;
     [SerializeField] RadialMenuFraction _radialMenuFractionPrefab;
@@ -42,8 +52,11 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
             _fractions[i].Button.onClick.AddListener(() => {
                 //Debug.Log(aux);
-                if(!_isDragging)
-                    SelectItem(aux);
+                if (_isDragging)
+                    return;
+
+                SelectItem(aux);
+                _elements[aux].Callback?.Invoke();
             });
         }
 
@@ -101,12 +114,6 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
         fraction.Icon.transform.localPosition = fraction.Circle.transform.localPosition + Quaternion.AngleAxis((index - 1) * stepAngle, Vector3.forward) * Vector3.up * ((1f - _iconDistance) * fraction.CircleRect.rect.height / 2f);
         fraction.Icon.transform.localRotation = Quaternion.Euler(0, 0, (index - 1) * stepAngle + 90);
         fraction.Icon.transform.localScale = Vector3.one * _iconScale;
-
-        //temp
-        fraction.Name.text = index.ToString() + " index";
-
-        if (element == null)
-            return;
 
         fraction.Icon.sprite = element.Icon;
         fraction.Name.text = element.Name;
