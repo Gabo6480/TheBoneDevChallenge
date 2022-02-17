@@ -38,8 +38,16 @@ public class RadialMenuFraction : MonoBehaviour
     {
         _isSelected = value;
 
-        Circle.DOColor(_isSelected ? _selectedColor : _unSelectedColor, 0.2f);
+        if (_isSelected)
+        {
+            Circle.DOColor(_selectedColor, 0.2f).SetDelay(0.1f);
+            transform.DOScale(Vector3.one *  _selectedTargetScale, 0.2f).SetDelay(0.1f);
+        }
+        else
+        {
+            Circle.DOColor(_unSelectedColor, 0.2f);
+            transform.DOScale(Vector3.one * _originalCircleScale, 0.2f).SetDelay(0.1f);
+        }
 
-        Circle.transform.DOScale(Vector3.one * (_isSelected ? _selectedTargetScale : _originalCircleScale), 0.2f);
     }
 }

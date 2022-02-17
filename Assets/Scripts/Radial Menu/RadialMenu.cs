@@ -24,6 +24,7 @@ public class RadialMenu : MonoBehaviour
     [SerializeField] RadialMenuFraction[] _fractions;
 
     float _stepAngle;
+    int _currentSelected = 0;
     private void Start()
     {
         //BuildMenu();
@@ -37,18 +38,12 @@ public class RadialMenu : MonoBehaviour
 
             _fractions[i].Button.onClick.AddListener(() => {
                 //Debug.Log(aux);
-                RotateElementParent(-(aux - 1) * _stepAngle);
-
-                for (int j = 0; j < _fractions.Length; j++)
-                {
-                    _fractions[j].SetIsSelected(j == aux);
-                }
+                SelectItem(aux);
             });
         }
 
         //Set the _firstSelected item in the list as selected
-        RotateElementParent(-(_firstSelected - 1) * _stepAngle);
-        _fractions[_firstSelected].SetIsSelected(true);
+        SelectItem(_firstSelected);
     }
 
     private void OnValidate()
@@ -93,7 +88,7 @@ public class RadialMenu : MonoBehaviour
 
         fraction.Circle.fillAmount = 1f / _elements.Length - _gap / 360f;
         fraction.Circle.transform.localPosition = Vector3.zero;
-        fraction.Circle.transform.localRotation = Quaternion.Euler(0, 0, -stepAngle / 2f + _gap / 2f + index * stepAngle);
+        fraction.Circle.transform.localRotation = Quaternion.Euler(0, 0, -stepAngle / 2f - _gap / 2f + index * stepAngle);
         //fraction.Circle.color = Color.gray;
 
         //Debug.Log(_fractions[i].CircleRect.rect.height);
@@ -110,6 +105,27 @@ public class RadialMenu : MonoBehaviour
 
         fraction.Icon.sprite = element.Icon;
         //fraction.Name.text = element.Name;
+    }
+
+    void SelectItem(int index)
+    {
+        RotateElementParent(-(index - 1) * _stepAngle);
+
+        for (int j = 0; j < _fractions.Length; j++)
+        {
+            _fractions[j].SetIsSelected(j == index);
+        }
+
+        _currentSelected = index;
+    }
+
+    public void SelectionUp()
+    {
+        SelectItem((_currentSelected + 1) % _fractions.Length);
+    }
+    public void SelectionDown()
+    {
+        SelectItem((_currentSelected - 1 + _fractions.Length) % _fractions.Length);
     }
 
     void RotateElementParent(float targetAngle)
