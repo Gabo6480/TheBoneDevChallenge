@@ -11,6 +11,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
     [System.Serializable]
     struct RadialMenuElement
     {
+        [SerializeField] public bool Inactive;
         [SerializeField] public string Name;
         [SerializeField] public Sprite Icon;
         [SerializeField] public UnityEvent Callback;
@@ -46,6 +47,9 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
         for (int i = 0; i < _fractions.Length; i++)
         {
+            if (_elements[i].Inactive)
+                continue;
+
             //It's important to use an auxiliary variable that gets created on the loop
             //This allows the callback have access to the value from memory
             int aux = i;
@@ -117,6 +121,8 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
         fraction.Icon.sprite = element.Icon;
         fraction.Name.text = element.Name;
+
+        fraction.gameObject.SetActive(!element.Inactive);
     }
 
     void SelectItem(int index)
