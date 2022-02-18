@@ -83,7 +83,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
     [ContextMenu("Build Menu")]
     void BuildMenu()
     {
-        var frac = GetComponentsInChildren<RadialMenuFraction>();
+        var frac = GetComponentsInChildren<RadialMenuFraction>(true);
         foreach (var f in frac)
         {
                 if(f != null)
@@ -96,9 +96,11 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
         for (int i = 0; i < _elements.Length; i++)
         {
-            _fractions[i] = Instantiate(_radialMenuFractionPrefab, _elementParent);
+            _fractions[i] = Instantiate(_radialMenuFractionPrefab, transform);
 
             SetFractionAppereance(_fractions[i], _elements[i], i, stepAngle);
+
+            _fractions[i].transform.SetParent(_elementParent, true);
         }
     }
 
