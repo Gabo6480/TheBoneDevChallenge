@@ -12,11 +12,11 @@ public class CurvedText : MonoBehaviour
 
     [SerializeField] float _curvature = 0;
 
-    float _oldCurvature = float.MaxValue;
+    //float _oldCurvature = float.MaxValue;
 
     float _radius = 0;
 
-    bool _forceUpdate = false;
+    //bool _forceUpdate = false;
 
     private void OnValidate()
     {
@@ -24,25 +24,50 @@ public class CurvedText : MonoBehaviour
             _text = gameObject.GetComponent<TMP_Text>();
         if(_textRect == null)
             _textRect = gameObject.GetComponent<RectTransform>();
-
-        _forceUpdate = true;
     }
 
     private void OnEnable()
     {
-        _forceUpdate = true;
+        // Subscribe to event fired when text object has been regenerated.
+        TMPro_EventManager.TEXT_CHANGED_EVENT.Add(ON_TEXT_CHANGED);
+    }
+    private void OnDisable()
+    {
+        TMPro_EventManager.TEXT_CHANGED_EVENT.Remove(ON_TEXT_CHANGED);
     }
 
-    private void Update()
+    void ON_TEXT_CHANGED(Object obj)
     {
-        //if the text and the parameters are the same of the old frame, don't waste time in re-computing everything
-        if (!_forceUpdate && !_text.havePropertiesChanged && !ParametersHaveChanged())
-        {
-            return;
-        }
+        if (obj == _text)
+            UpdateTextMesh();
+    }
 
-        _forceUpdate = false;
+    //private void Update()
+    //{
+    //    //if the text and the parameters are the same of the old frame, don't waste time in re-computing everything
+    //    if (!_forceUpdate && !ParametersHaveChanged())
+    //    {
+    //        return;
+    //    }
+    //
+    //    _forceUpdate = false;
+    //
+    //    //UpdateTextMesh();
+    //}
 
+    //bool ParametersHaveChanged()
+    //{
+    //    //check if paramters have changed and update the old values for next frame iteration
+    //    bool retVal = _curvature != _oldCurvature;
+    //
+    //    _oldCurvature = _curvature;
+    //
+    //    return retVal;
+    //}
+
+    [ContextMenu("Update Text Mesh")]
+    void UpdateTextMesh()
+    {
         //We use the curvature to calculate the radius of the circle with the arc length formula S = rA
         //using the text's bound's width as the arc lenght (S) and _curvature as the inner angle (A)
         if (_curvature != 0)
@@ -50,22 +75,6 @@ public class CurvedText : MonoBehaviour
         else
             _radius = 0;
 
-        UpdateTextMesh();
-    }
-
-    bool ParametersHaveChanged()
-    {
-        //check if paramters have changed and update the old values for next frame iteration
-        bool retVal = _curvature != _oldCurvature;
-
-        _oldCurvature = _curvature;
-
-        return retVal;
-    }
-
-    [ContextMenu("Update Text Mesh")]
-    void UpdateTextMesh()
-    {
         //Vertices represents the 4 vertices of a single character we're analyzing, 
         //while matrix is the roto-translation matrix that will rotate and scale the characters so that they will
         //follow the curve
@@ -73,9 +82,13 @@ public class CurvedText : MonoBehaviour
         Matrix4x4 matrix;
 
         //Generate the mesh and get information about the text and the characters
-        _text.ForceMeshUpdate();
-
+        //_text.ForceMeshUpdate();
         TMP_TextInfo textInfo = _text.textInfo;
+
+        //We can't work if the text info is null
+        if (textInfo == null)
+            return;
+
         int characterCount = textInfo.characterCount;
 
         //if the string is empty, no need to waste time
@@ -154,13 +167,13 @@ public class CurvedText : MonoBehaviour
         return Matrix4x4.TRS(newMideBaselinePos, Quaternion.AngleAxis(-Mathf.Atan2(y0, x0) * Mathf.Rad2Deg, Vector3.forward), Vector3.one);
     }
 
-    private void OnDrawGizmos()
-    {
-        //Gizmos.color = Color.red;
-        //
-        //var pos = transform.position;
-        //pos.y -= _radius;
-        //
-        //Gizmos.DrawSphere(pos, 0.01f);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    //Gizmos.color = Color.red;
+    //    //
+    //    //var pos = transform.position;
+    //    //pos.y -= _radius;
+    //    //
+    //    //Gizmos.DrawSphere(pos, 0.01f);
+    //}
 }
