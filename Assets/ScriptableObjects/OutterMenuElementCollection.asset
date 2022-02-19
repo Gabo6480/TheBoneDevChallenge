@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aded474d19f8734fbb3ae23436e473b, type: 3}
+  m_Name: OutterMenuElementCollection
+  m_EditorClassIdentifier: 
+  _elements:
+  - Inactive: 0
+    Name: Mezclar
+    Icon: {fileID: 0}
+  - Inactive: 0
+    Name: Forjar
+    Icon: {fileID: 0}
+  - Inactive: 0
+    Name: Descubrir
+    Icon: {fileID: 0}
+  - Inactive: 0
+    Name: Fusionar
+    Icon: {fileID: 0}
+  - Inactive: 1
+    Name: 
+    Icon: {fileID: 0}
+  - Inactive: 1
+    Name: 
+    Icon: {fileID: 0}
+  _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
+    type: 3}
+  _firstSelected: 3

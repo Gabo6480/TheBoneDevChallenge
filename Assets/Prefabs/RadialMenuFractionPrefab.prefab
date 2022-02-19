@@ -65,9 +65,14 @@ MonoBehaviour:
   CircleRect: {fileID: 5015520523950200895}
   Name: {fileID: 4397144405816762052}
   Button: {fileID: 7041835089967362196}
-  _selectedColor: {r: 1, g: 1, b: 1, a: 1}
-  _unSelectedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _circleCutout: 0.333
+  HoverAble: 1
+  _selectedColorMod: {r: 1, g: 1, b: 1, a: 1}
+  _unselectedColorMod: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   _selectedTargetScale: 1.05
+  _iconSoftMaskable: {fileID: 637694272310742273}
+  _circleSoftMaskable: {fileID: 8682424627340461399}
+  _nameSoftMaskable: {fileID: 5564561121134239423}
 --- !u!1 &2394748555877489313
 GameObject:
   m_ObjectHideFlags: 0

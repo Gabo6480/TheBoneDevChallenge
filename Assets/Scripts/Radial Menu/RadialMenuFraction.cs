@@ -5,8 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using TMPro;
+using Coffee.UISoftMask;
 
-public class RadialMenuFraction : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class RadialMenuFraction : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPoolable
 {
     public Image Icon;
     public Image Circle;
@@ -14,78 +15,185 @@ public class RadialMenuFraction : MonoBehaviour, IPointerEnterHandler, IPointerE
     public TMP_Text Name;
     public Button Button;
 
+    [SerializeField] [Range(0f, 0.5f)] float _circleCutout = 0.25f;
+
+    public float CircleCutout { 
+        get { return _circleCutout; }
+        set {
+            _circleCutout = value;
+            if (Circle != null)
+                Circle.material.SetFloat("_Cutout_Radius", _circleCutout);
+        }
+    }
+
+    [HideInInspector]
+    public bool HoverAble = true;
+
     [Header("Appereance")]
-    [SerializeField] Color _selectedColor = Color.white;
-    [SerializeField] Color _unSelectedColor = Color.gray;
+    [SerializeField] Color _selectedColorMod = Color.white;
+    [SerializeField] Color _unselectedColorMod = Color.gray;
     [SerializeField] float _selectedTargetScale = 1.05f;
+    [Space]
+    [SerializeField] SoftMaskable _iconSoftMaskable;
+    [SerializeField] SoftMaskable _circleSoftMaskable;
+    [SerializeField] SoftMaskable _nameSoftMaskable;
+
 
     float _originalCircleScale = 1;
 
-    bool _isSelected = false;
+    public bool IsSelected { get; private set; } = false;
 
-    Tween hoverColorTween;
-    Tween hoverScaleTween;
+    Tween _hoverCircleColorTween;
+    Tween _hoverIconColorTween;
+    Tween _hoverNameColorTween;
+    Tween _hoverScaleTween;
 
-    Tween selectedColorTween;
-    Tween selectedScaleTween;
+    Tween _selectedCircleColorTween;
+    Tween _selectedIconColorTween;
+    Tween _selectedNameColorTween;
+    Tween _selectedScaleTween;
 
-    private void Start()
+    Color _originalCircleColor;
+    Color _originalIconColor;
+    Color _originalNameColor;
+
+    Color _selectedCircleColor;
+    Color _unselectedCircleColor;
+
+    Color _selectedIconColor;
+    Color _unselectedIconColor;
+
+    Color _selectedNameColor;
+    Color _unselectedNameColor;
+
+    public void OnSpawned()
     {
-        Circle.color = _unSelectedColor;
+        Circle.color = _unselectedCircleColor;
+        Icon.color = _unselectedIconColor;
+        Name.color = _unselectedNameColor;
+        transform.localScale = Vector3.one * _originalCircleScale;
+
+        Circle.material.SetFloat("_Cutout_Radius", _circleCutout);
+
+        IsSelected = false;
+        HoverAble = true;
+        SetMaskAble(true);
+    }
+    private void Awake()
+    {
+        _originalCircleColor = Circle.color;
+        _originalIconColor = Icon.color;
+        _originalNameColor = Name.color;
+
+        _selectedCircleColor = _originalCircleColor * _selectedColorMod;
+        _unselectedCircleColor = _originalCircleColor * _unselectedColorMod;
+
+        _selectedIconColor = _originalIconColor * _selectedColorMod;
+        _unselectedIconColor = _originalIconColor * _unselectedColorMod;
+
+        _selectedNameColor = _originalNameColor * _selectedColorMod;
+        _unselectedNameColor = _originalNameColor * _unselectedColorMod;
 
         _originalCircleScale = Circle.transform.localScale.x;
+
+        Circle.material = new Material(Circle.material);
+
+        OnSpawned();
     }
 
     private void OnValidate()
     {
         if (Circle != null)
+        {
             CircleRect = Circle.GetComponent<RectTransform>();
+            Circle.material.SetFloat("_Cutout_Radius", _circleCutout);
+            _circleSoftMaskable = Circle.GetComponent<SoftMaskable>();
+        }
+
+        if (Icon != null)
+            _iconSoftMaskable = Icon.GetComponent<SoftMaskable>();
+
+        if (Name != null)
+            _nameSoftMaskable = Name.GetComponent<SoftMaskable>();
     }
 
     public void SetIsSelected(bool value)
     {
-        if (_isSelected == value)
+        if (IsSelected == value || !HoverAble)
             return;
 
-        _isSelected = value;
+        IsSelected = value;
 
-        selectedColorTween.Kill();
-        selectedScaleTween.Kill();
+        _selectedCircleColorTween.Kill();
+        _selectedIconColorTween.Kill();
+        _selectedNameColorTween.Kill();
+        _selectedScaleTween.Kill();
 
-        if (_isSelected)
+        if (IsSelected)
         {
-            selectedColorTween = Circle.DOColor(_selectedColor, 0.2f).SetDelay(0.1f);
-            selectedScaleTween = transform.DOScale(Vector3.one *  _selectedTargetScale, 0.2f).SetDelay(0.1f);
+            _selectedCircleColorTween = Circle.DOColor(_selectedCircleColor, 0.3f).SetDelay(0.1f);
+            _selectedIconColorTween = Icon.DOColor(_selectedIconColor, 0.3f).SetDelay(0.1f);
+            _selectedNameColorTween = Name.DOColor(_selectedNameColor, 0.3f).SetDelay(0.1f);
+            _selectedScaleTween = transform.DOScale(Vector3.one *  _selectedTargetScale, 0.3f).SetDelay(0.1f);
         }
         else
         {
-            selectedColorTween = Circle.DOColor(_unSelectedColor, 0.2f);
-            selectedScaleTween = transform.DOScale(Vector3.one * _originalCircleScale, 0.2f);
+            _selectedCircleColorTween = Circle.DOColor(_unselectedCircleColor, 0.2f);
+            _selectedIconColorTween = Icon.DOColor(_unselectedIconColor, 0.2f);
+            _selectedNameColorTween = Name.DOColor(_unselectedNameColor, 0.2f);
+            _selectedScaleTween = transform.DOScale(Vector3.one * _originalCircleScale, 0.2f);
         }
 
     }
 
+    public void SetMaskAble(bool value)
+    {
+        _circleSoftMaskable.enabled = value;
+        _iconSoftMaskable.enabled = value;
+        _nameSoftMaskable.enabled = value;
+    }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (_isSelected)
+        if (IsSelected || !HoverAble)
             return;
 
-        hoverColorTween.Kill();
-        hoverScaleTween.Kill();
+        _hoverCircleColorTween.Kill();
+        _hoverIconColorTween.Kill();
+        _hoverNameColorTween.Kill();
+        _hoverScaleTween.Kill();
 
-        hoverColorTween = Circle.DOColor(Color.Lerp(_selectedColor, _unSelectedColor, 0.5f), 0.2f);
-        hoverScaleTween = transform.DOScale(Vector3.one * Mathf.Lerp(_selectedTargetScale, _originalCircleScale, 0.5f), 0.2f);
+        _hoverCircleColorTween = Circle.DOColor(Color.Lerp(_selectedCircleColor, _unselectedCircleColor, 0.5f), 0.3f);
+        _hoverIconColorTween = Icon.DOColor(Color.Lerp(_selectedIconColor, _unselectedIconColor, 0.5f), 0.3f);
+        _hoverNameColorTween = Name.DOColor(Color.Lerp(_selectedNameColor, _unselectedNameColor, 0.5f), 0.3f);
+        _hoverScaleTween = transform.DOScale(Vector3.one * Mathf.Lerp(_selectedTargetScale, _originalCircleScale, 0.5f), 0.3f);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if(_isSelected)
+        if(IsSelected || !HoverAble)
             return;
 
-        hoverColorTween.Kill();
-        hoverScaleTween.Kill();
+        _hoverCircleColorTween.Kill();
+        _hoverIconColorTween.Kill();
+        _hoverNameColorTween.Kill();
+        _hoverScaleTween.Kill();
 
-        hoverColorTween = Circle.DOColor(_unSelectedColor, 0.1f);
-        hoverScaleTween = transform.DOScale(Vector3.one * _originalCircleScale, 0.2f);
+        _hoverCircleColorTween = Circle.DOColor(_unselectedCircleColor, 0.2f);
+        _hoverIconColorTween = Icon.DOColor(_unselectedIconColor, 0.2f);
+        _hoverNameColorTween = Name.DOColor(_unselectedNameColor, 0.2f);
+        _hoverScaleTween = transform.DOScale(Vector3.one * _originalCircleScale, 0.3f);
+    }
+
+    private void OnDisable()
+    {
+        Circle.DOKill();
+        Icon.DOKill();
+        Name.DOKill();
+        transform.DOKill();
+    }
+
+    public string getName()
+    {
+        return "RadialMenuFraction";
     }
 }
