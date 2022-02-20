@@ -21,8 +21,19 @@ public class RadialMenuFraction : MonoBehaviour, IPointerEnterHandler, IPointerE
         get { return _circleCutout; }
         set {
             _circleCutout = value;
-            if (Circle != null)
-                Circle.material.SetFloat("_Cutout_Radius", _circleCutout);
+            if (_circleMaterial != null)
+            {
+                //Debug.Log("Update Circle Cutout: " + value);
+
+                if(gameObject.activeInHierarchy && _circleSoftMaskable.modifiedMaterial != null)
+                    _circleSoftMaskable.modifiedMaterial.SetFloat("_Cutout_Radius", _circleCutout);
+                else
+                    _circleMaterial.SetFloat("_Cutout_Radius", _circleCutout);
+
+                Circle.material = _circleMaterial;
+
+                //Circle.SetMaterialDirty();
+            }
         }
     }
 
@@ -66,6 +77,8 @@ public class RadialMenuFraction : MonoBehaviour, IPointerEnterHandler, IPointerE
     Color _selectedNameColor;
     Color _unselectedNameColor;
 
+    Material _circleMaterial;
+
     public void OnSpawned()
     {
         Circle.color = _unselectedCircleColor;
@@ -73,7 +86,7 @@ public class RadialMenuFraction : MonoBehaviour, IPointerEnterHandler, IPointerE
         Name.color = _unselectedNameColor;
         transform.localScale = Vector3.one * _originalCircleScale;
 
-        Circle.material.SetFloat("_Cutout_Radius", _circleCutout);
+        _circleMaterial.SetFloat("_Cutout_Radius", _circleCutout);
 
         IsSelected = false;
         HoverAble = true;
@@ -96,7 +109,8 @@ public class RadialMenuFraction : MonoBehaviour, IPointerEnterHandler, IPointerE
 
         _originalCircleScale = Circle.transform.localScale.x;
 
-        Circle.material = new Material(Circle.material);
+        _circleMaterial = Instantiate(Circle.material);
+        Circle.material = _circleMaterial;
 
         OnSpawned();
     }
@@ -106,7 +120,8 @@ public class RadialMenuFraction : MonoBehaviour, IPointerEnterHandler, IPointerE
         if (Circle != null)
         {
             CircleRect = Circle.GetComponent<RectTransform>();
-            Circle.material.SetFloat("_Cutout_Radius", _circleCutout);
+            if(_circleMaterial != null)
+                _circleMaterial.SetFloat("_Cutout_Radius", _circleCutout);
             _circleSoftMaskable = Circle.GetComponent<SoftMaskable>();
         }
 

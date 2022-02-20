@@ -10,27 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9aded474d19f8734fbb3ae23436e473b, type: 3}
-  m_Name: OutterMenuElementCollection
+  m_Name: StopMenuElementCollection
   m_EditorClassIdentifier: 
   _elements:
   - Inactive: 0
-    Name: Mezclar
-    Icon: {fileID: 21300000, guid: 5daedb55fc70f6349bdb78e6f9b470e6, type: 3}
-  - Inactive: 0
-    Name: Forjar
-    Icon: {fileID: 21300000, guid: 50c56c928cc7f0b47abfc32678728572, type: 3}
-  - Inactive: 0
-    Name: Descubrir
-    Icon: {fileID: 21300000, guid: 17a9f56b8817a3a488ded92a16845aee, type: 3}
-  - Inactive: 0
-    Name: Fusionar
-    Icon: {fileID: 21300000, guid: 6847d64f50d164b48822fcbfdf959721, type: 3}
-  - Inactive: 1
-    Name: 
+    Name: Stop
     Icon: {fileID: 0}
-  - Inactive: 1
-    Name: 
+  - Inactive: 0
+    Name: Work In Progress
     Icon: {fileID: 0}
   _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
     type: 3}
-  _firstSelected: 3
+  _firstSelected: 1

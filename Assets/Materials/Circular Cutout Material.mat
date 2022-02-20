@@ -38,7 +38,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorMask: 15
-    - _Cutout_Radius: 0.333
+    - _Cutout_Radius: 0.28
+    - _Outter_Edge_Radius: 0.475
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0

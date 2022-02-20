@@ -14,23 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _elements:
   - Inactive: 0
-    Name: Red
-    Icon: {fileID: 0}
+    Name: Rojo
+    Icon: {fileID: -1077479583, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
   - Inactive: 0
-    Name: Purple
-    Icon: {fileID: 0}
+    Name: Morado
+    Icon: {fileID: -1909705342, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
   - Inactive: 0
-    Name: Blue
-    Icon: {fileID: 0}
+    Name: Azul
+    Icon: {fileID: -1511108627, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
   - Inactive: 0
     Name: Cyan
-    Icon: {fileID: 0}
+    Icon: {fileID: 561684624, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
   - Inactive: 0
-    Name: Green
-    Icon: {fileID: 0}
+    Name: Verde
+    Icon: {fileID: 413348349, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
   - Inactive: 0
-    Name: Yellow
-    Icon: {fileID: 0}
+    Name: Amarillo
+    Icon: {fileID: 1878970778, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
   _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
     type: 3}
-  _firstSelected: 0
+  _firstSelected: 1

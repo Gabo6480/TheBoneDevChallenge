@@ -24,4 +24,4 @@ MonoBehaviour:
     Icon: {fileID: 0}
   _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
     type: 3}
-  _firstSelected: 0
+  _firstSelected: 1

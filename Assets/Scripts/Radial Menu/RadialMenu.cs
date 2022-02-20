@@ -9,11 +9,13 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 {
     [Header("Settings")]
     public RadialMenuElementCollection ElementCollection;
+    public bool Interactable = true;
 
     [Header("Appearance")]
-    [SerializeField] float _gap = 1f;
-    [Range(0, 1)] [SerializeField] float _iconDistance = 0.1f;
-    [SerializeField] float _iconScale = 1f;
+    public float Gap = 1f;
+    [Range(0, 1)] public float IconDistance = 0.1f;
+    public float IconScale = 1f;
+    [Range(0f, 0.5f)] public float CircleCutout = 0.25f;
 
     [Header("Animation")]
     [SerializeField] AnimationCurve _rotationEase;
@@ -27,7 +29,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] UnityEvent<int> _onValueChange;
 
     float _stepAngle;
-    public int currentSelected { get; private set; } = int.MaxValue;
+    public int currentSelected { get; private set; } = -1;
     public int elementCount { get { return ElementCollection.Elements.Length; } }
     public int activeElementCount { get {
             int i = 0;
@@ -41,7 +43,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
     public RadialMenuFraction currentFraction { get { return _fractions[currentSelected]; } }
     bool _isDragging = false;
 
-    private void Start()
+    private void Awake()
     {
         //BuildMenu();
         _stepAngle = 360f / ElementCollection.Elements.Length;
@@ -57,7 +59,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
             _fractions[i].Button.onClick.AddListener(() => {
                 //Debug.Log(aux);
-                if (_isDragging)
+                if (_isDragging || !Interactable)
                     return;
 
                 SelectItem(aux);
@@ -66,7 +68,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
         }
 
         //Set the _firstSelected item in the list as selected
-        SelectItem(ElementCollection.FirstSelected);
+        //SelectItem(ElementCollection.FirstSelected);
     }
 
     private void OnValidate()
@@ -74,14 +76,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
         if (ElementCollection == null || Application.isPlaying)
             return;
 
-        var stepAngle = 360f / ElementCollection.Elements.Length;
-
-        if (_fractions != null && ElementCollection.Elements.Length == _fractions.Length)
-            for (int i = 0; i < ElementCollection.Elements.Length; i++)
-        {
-            if(_fractions[i] != null)
-                SetFractionAppereance(_fractions[i], ElementCollection.Elements[i], i, stepAngle);
-        }
+        UpdateFractionAppereance();
     }
 
     [ContextMenu("Build Menu")]
@@ -92,6 +87,8 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
         {
                 if(f != null)
             {
+                f.Button.onClick.RemoveAllListeners();
+
                 if (!Application.isPlaying)
                     DestroyImmediate(f.gameObject);
                 else
@@ -150,26 +147,53 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
         fraction.transform.localPosition = Vector3.zero;
         fraction.transform.localRotation = Quaternion.identity;
 
-        fraction.Circle.fillAmount = 1f / ElementCollection.Elements.Length - _gap / 360f;
+        fraction.Circle.fillAmount = 1f / ElementCollection.Elements.Length - Gap / 360f;
         fraction.Circle.transform.localPosition = Vector3.zero;
-        fraction.Circle.transform.localRotation = Quaternion.Euler(0, 0, -stepAngle / 2f - _gap / 2f + index * stepAngle);
+        fraction.Circle.transform.localRotation = Quaternion.Euler(0, 0, -stepAngle / 2f - Gap / 2f + index * stepAngle);
         //fraction.Circle.color = Color.gray;
 
         //Debug.Log(_fractions[i].CircleRect.rect.height);
 
-        fraction.Icon.transform.localPosition = fraction.Circle.transform.localPosition + Quaternion.AngleAxis((index - 1) * stepAngle, Vector3.forward) * Vector3.up * ((1f - _iconDistance) * fraction.CircleRect.rect.height / 2f);
-        fraction.Icon.transform.localRotation = Quaternion.Euler(0, 0, (index - 1) * stepAngle + 90);
-        fraction.Icon.transform.localScale = Vector3.one * _iconScale;
+        fraction.Icon.transform.localPosition = fraction.Circle.transform.localPosition + Quaternion.AngleAxis((index - 1) * stepAngle, Vector3.forward) * Vector3.up * ((1f - IconDistance) * fraction.CircleRect.rect.height / 2f);
+        fraction.Icon.transform.localRotation = Quaternion.Euler(0, 0, (index - 1) * stepAngle);
+        fraction.Icon.transform.localScale = Vector3.one * IconScale;
 
         fraction.Icon.sprite = element.Icon;
+        fraction.Icon.enabled = element.Icon != null;
+
+
         fraction.Name.text = element.Name;
+
+        fraction.CircleCutout = CircleCutout;
 
         fraction.gameObject.SetActive(!element.Inactive);
     }
 
+    public void UpdateFractionAppereance()
+    {
+        var stepAngle = 360f / ElementCollection.Elements.Length;
+
+        if (_fractions != null && ElementCollection.Elements.Length == _fractions.Length)
+            for (int i = 0; i < ElementCollection.Elements.Length; i++)
+            {
+                if (_fractions[i] != null)
+                    SetFractionAppereance(_fractions[i], ElementCollection.Elements[i], i, stepAngle);
+            }
+    }
+
+    public void InitializeSelection()
+    {
+        if(currentSelected == -1)
+            SelectItem(ElementCollection.FirstSelected);
+        else
+            SelectItem(currentSelected);
+    }
+
     void SelectItem(int index)
     {
-        if (currentSelected == index && _fractions[index].IsSelected)
+        index = NormalizeIndex(index);
+
+        if (currentSelected == index && (_fractions[index].IsSelected || !_fractions[index].gameObject.activeInHierarchy))
             return;
 
         if (!_fractions[index].gameObject.activeInHierarchy)
@@ -192,8 +216,12 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
         for (int j = 0; j < _fractions.Length; j++)
         {
             _fractions[j].SetIsSelected(j == index);
-            _fractions[j].SetMaskAble(j != index);
+            //_fractions[j].SetMaskAble(j != index);
         }
+    }
+    public void DiselectCurrentFracction()
+    {
+        _fractions[currentSelected].SetIsSelected(false);
     }
 
     void SetItemHoverAble(bool value)
@@ -228,7 +256,8 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
     void RotateElementParent(float targetAngle)
     {
-        _elementParent.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, targetAngle), 0.4f).SetUpdate(true).SetEase(_rotationEase);
+        if(_elementParent.eulerAngles.z + 360f % 360f != targetAngle + 360f % 360f)
+            _elementParent.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, targetAngle), 0.4f).SetUpdate(true).SetEase(_rotationEase);
     }
 
     public void OnDrag(PointerEventData eventData)

@@ -4,7 +4,8 @@ Shader "Hidden/Unlit/CircularCutout (SoftMaskable)"
     {
         [PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
         _Color("Tint", Color) = (1,1,1,1)
-        _Cutout_Radius("Cutout Radius", Range(0, 1)) = 0.25
+        _Cutout_Radius("Cutout Radius", Range(0, 0.5)) = 0.25
+        _Outter_Edge_Radius("Outter Edge Radius", Range(0, 1)) = 0.45
 
         _StencilComp("Stencil Comparison", Float) = 8
         _Stencil("Stencil ID", Float) = 0
@@ -80,6 +81,7 @@ Shader "Hidden/Unlit/CircularCutout (SoftMaskable)"
                 sampler2D _MainTex;
                 fixed4 _Color;
                 float _Cutout_Radius;
+                float _Outter_Edge_Radius;
                 fixed4 _TextureSampleAdd;
                 float4 _ClipRect;
                 float4 _MainTex_ST;
@@ -113,7 +115,10 @@ Shader "Hidden/Unlit/CircularCutout (SoftMaskable)"
 
                     float circularDistance = distance(circleAux, float2(0,0));
 
-                    color.a *= circularDistance > _Cutout_Radius ? 1.f : 0.f;
+                    float edgeDiff = _Outter_Edge_Radius - _Cutout_Radius;
+
+
+                    color.a *= saturate((circularDistance - _Cutout_Radius) / (edgeDiff == 0 ? 0.001 : edgeDiff));
 
                     color.a *= SoftMask(IN.vertex, IN.worldPosition);	// Add for soft mask
 
