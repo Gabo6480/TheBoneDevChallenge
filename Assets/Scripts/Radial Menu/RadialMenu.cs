@@ -132,13 +132,16 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
             _fractions[i].Button.onClick.AddListener(() => {
                 //Debug.Log(aux);
-                if (_isDragging)
+                if (_isDragging || !Interactable)
                     return;
 
                 SelectItem(aux);
                 //_elementCollection.Elements[aux].Callback?.Invoke();
             });
         }
+
+        if(currentSelected != -1)
+            RotateElementParent(-(currentSelected - 1) * _stepAngle);
     }
 
     void SetFractionAppereance(RadialMenuFraction fraction, RadialMenuElement element, int index, float stepAngle)
