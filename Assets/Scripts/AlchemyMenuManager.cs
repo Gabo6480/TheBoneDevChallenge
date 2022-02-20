@@ -85,7 +85,7 @@ public class AlchemyMenuManager : MonoBehaviour
 
     public void PreviousRing()
     {
-        Debug.Log("Back");
+        //Debug.Log("Back");
         GoToRing(currentRingMenuIndex - 1);
     }
 
@@ -121,7 +121,7 @@ public class AlchemyMenuManager : MonoBehaviour
 
             _ringMenuLayers[i].gameObject.SetActive(scaleIndex >= _mainScaleIndex - 2);
 
-            _ringMenuLayers[i].transform.DOKill();
+            _ringMenuLayers[i].transform.DOKill(true);
             int aux = i;
             _ringMenuLayers[i].transform.DOScale(_scaleIncreaseStages[scaleIndex], 0.3f).OnComplete(() => {
                     _ringMenuLayers[aux].gameObject.SetActive(scaleIndex >= _mainScaleIndex - 1);

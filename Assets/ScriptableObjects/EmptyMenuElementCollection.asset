@@ -10,17 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9aded474d19f8734fbb3ae23436e473b, type: 3}
-  m_Name: StopMenuElementCollection
+  m_Name: EmptyMenuElementCollection
   m_EditorClassIdentifier: 
-  _elements:
-  - Inactive: 0
-    Name: Stop
-    Icon: {fileID: 0}
-    SubElement: {fileID: 11400000, guid: 2031c524aca571e48b1eddb1ed5395b2, type: 2}
-  - Inactive: 0
-    Name: Work In Progress
-    Icon: {fileID: 0}
-    SubElement: {fileID: 11400000, guid: 2031c524aca571e48b1eddb1ed5395b2, type: 2}
+  _elements: []
   _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
     type: 3}
   _firstSelected: 1

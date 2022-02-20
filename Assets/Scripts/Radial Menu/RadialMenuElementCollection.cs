@@ -8,6 +8,7 @@ public struct RadialMenuElement
     [SerializeField] public bool Inactive;
     [SerializeField] public string Name;
     [SerializeField] public Sprite Icon;
+    [SerializeField] public RadialMenuElementCollection SubElement;
 }
 
 [CreateAssetMenu(fileName = "RadialMenuElementCollection", menuName = "Radial Menu/Element Collection")]

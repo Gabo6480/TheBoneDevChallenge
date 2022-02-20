@@ -45,26 +45,14 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
     private void Awake()
     {
-        //BuildMenu();
+        if (ElementCollection == null)
+            return;
+
         _stepAngle = 360f / ElementCollection.Elements.Length;
 
         for (int i = 0; i < _fractions.Length; i++)
         {
-            if (ElementCollection.Elements[i].Inactive)
-                continue;
-
-            //It's important to use an auxiliary variable that gets created on the loop
-            //This allows the callback have access to the value from memory
-            int aux = i;
-
-            _fractions[i].Button.onClick.AddListener(() => {
-                //Debug.Log(aux);
-                if (_isDragging || !Interactable)
-                    return;
-
-                SelectItem(aux);
-                //_elementCollection.Elements[aux].Callback?.Invoke();
-            });
+            SetFractionButtonListener(i);
         }
 
         //Set the _firstSelected item in the list as selected
@@ -98,9 +86,12 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
             }
         }
 
+        if (ElementCollection == null)
+            return;
+
         _fractions = new RadialMenuFraction[ElementCollection.Elements.Length];
 
-        var stepAngle = 360f / ElementCollection.Elements.Length;
+        var stepAngle = ElementCollection.Elements.Length != 0 ? 360f / ElementCollection.Elements.Length : 0;
         _stepAngle = stepAngle;
 
         _elementParent.rotation = Quaternion.identity;
@@ -123,25 +114,13 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
             _fractions[i].transform.SetParent(_elementParent, true);
 
-            if (ElementCollection.Elements[i].Inactive)
-                continue;
-
-            //It's important to use an auxiliary variable that gets created on the loop
-            //This allows the callback have access to the value from memory
-            int aux = i;
-
-            _fractions[i].Button.onClick.AddListener(() => {
-                //Debug.Log(aux);
-                if (_isDragging || !Interactable)
-                    return;
-
-                SelectItem(aux);
-                //_elementCollection.Elements[aux].Callback?.Invoke();
-            });
+            SetFractionButtonListener(i);
         }
 
         if(currentSelected != -1)
             RotateElementParent(-(currentSelected - 1) * _stepAngle);
+        else
+            RotateElementParent(-(ElementCollection.FirstSelected - 1) * _stepAngle);
     }
 
     void SetFractionAppereance(RadialMenuFraction fraction, RadialMenuElement element, int index, float stepAngle)
@@ -174,6 +153,9 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void UpdateFractionAppereance()
     {
+        if (ElementCollection == null)
+            return;
+
         var stepAngle = 360f / ElementCollection.Elements.Length;
 
         if (_fractions != null && ElementCollection.Elements.Length == _fractions.Length)
@@ -186,7 +168,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void InitializeSelection()
     {
-        if(currentSelected == -1)
+        if(currentSelected == -1 && ElementCollection != null)
             SelectItem(ElementCollection.FirstSelected);
         else
             SelectItem(currentSelected);
@@ -263,6 +245,25 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
             _elementParent.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, targetAngle), 0.4f).SetUpdate(true).SetEase(_rotationEase);
     }
 
+    void SetFractionButtonListener(int index)
+    {
+        if (ElementCollection.Elements[index].Inactive)
+            return;
+
+        //It's important to use an auxiliary variable that gets created on the loop
+        //This allows the callback have access to the value from memory
+        int aux = index;
+
+        _fractions[index].Button.onClick.AddListener(() => {
+            //Debug.Log(aux);
+            if (_isDragging || !Interactable)
+                return;
+
+            SelectItem(aux);
+            //_elementCollection.Elements[aux].Callback?.Invoke();
+        });
+    }
+
     public void OnDrag(PointerEventData eventData)
     {
         _isDragging = true;
@@ -293,5 +294,5 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
         SelectItem(NormalizeIndex(selected));
     }
 
-    int NormalizeIndex(int index) => (index + _fractions.Length) % _fractions.Length;
+    int NormalizeIndex(int index) => _fractions.Length > 0 ? (index + _fractions.Length) % _fractions.Length : 0;
 }

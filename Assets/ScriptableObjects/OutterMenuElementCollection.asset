@@ -16,21 +16,27 @@ MonoBehaviour:
   - Inactive: 0
     Name: Mezclar
     Icon: {fileID: 21300000, guid: 5daedb55fc70f6349bdb78e6f9b470e6, type: 3}
+    SubElement: {fileID: 11400000, guid: 59623fd6d8922c94eb808e377c73d938, type: 2}
   - Inactive: 0
     Name: Forjar
     Icon: {fileID: 21300000, guid: 50c56c928cc7f0b47abfc32678728572, type: 3}
+    SubElement: {fileID: 11400000, guid: 59623fd6d8922c94eb808e377c73d938, type: 2}
   - Inactive: 0
     Name: Descubrir
     Icon: {fileID: 21300000, guid: 17a9f56b8817a3a488ded92a16845aee, type: 3}
+    SubElement: {fileID: 11400000, guid: 59623fd6d8922c94eb808e377c73d938, type: 2}
   - Inactive: 0
     Name: Fusionar
     Icon: {fileID: 21300000, guid: 6847d64f50d164b48822fcbfdf959721, type: 3}
+    SubElement: {fileID: 11400000, guid: 1203f83bae996874dbf791bc8b32c0cf, type: 2}
   - Inactive: 1
     Name: 
     Icon: {fileID: 0}
+    SubElement: {fileID: 0}
   - Inactive: 1
     Name: 
     Icon: {fileID: 0}
+    SubElement: {fileID: 0}
   _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
     type: 3}
   _firstSelected: 3

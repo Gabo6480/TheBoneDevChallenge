@@ -16,12 +16,15 @@ MonoBehaviour:
   - Inactive: 0
     Name: Test 0
     Icon: {fileID: 0}
+    SubElement: {fileID: 11400000, guid: bae15e9ea27fe7448b50e2bce79c3aaa, type: 2}
   - Inactive: 0
     Name: Test 1
     Icon: {fileID: 0}
+    SubElement: {fileID: 11400000, guid: bae15e9ea27fe7448b50e2bce79c3aaa, type: 2}
   - Inactive: 0
     Name: Test 2
     Icon: {fileID: 0}
+    SubElement: {fileID: 11400000, guid: bae15e9ea27fe7448b50e2bce79c3aaa, type: 2}
   _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
     type: 3}
   _firstSelected: 1

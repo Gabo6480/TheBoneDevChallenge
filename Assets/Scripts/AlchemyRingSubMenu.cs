@@ -6,7 +6,6 @@ using DG.Tweening;
 public class AlchemyRingSubMenu : AlchemyRingMenu
 {
     [SerializeField] RadialMenu _radialSubMenu;
-    [SerializeField] RadialMenuElementCollection[] _subMenuElementCollection;
 
     [Header("Appereance")]
     [Range(0, 1)] [SerializeField] float selfIconDistance = 0.1f;
@@ -19,18 +18,6 @@ public class AlchemyRingSubMenu : AlchemyRingMenu
     {
         if (_radialMenu == null)
             _radialMenu = GetComponent<RadialMenu>();
-
-        if (_subMenuElementCollection == null)
-            _subMenuElementCollection = new RadialMenuElementCollection[_radialMenu.elementCount];
-        else if(_subMenuElementCollection.Length != _radialMenu.elementCount)
-        {
-            var aux = _subMenuElementCollection;
-            _subMenuElementCollection = new RadialMenuElementCollection[_radialMenu.elementCount];
-
-            for (int i = 0; i < Mathf.Min(_subMenuElementCollection.Length, aux.Length); i++)
-                _subMenuElementCollection[i] = aux[i];
-        }
-
     }
     public override void CommitCurrentItem()
     {
@@ -40,7 +27,7 @@ public class AlchemyRingSubMenu : AlchemyRingMenu
     {
         if (manager.currentRingMenuIndex != RingIndex)
         {
-            _radialSubMenu.ElementCollection = _subMenuElementCollection[_radialMenu.currentSelected];
+            _radialSubMenu.ElementCollection = _radialMenu.ElementCollection.Elements[_radialMenu.currentSelected].SubElement;
             _radialSubMenu.BuildMenu();
             manager.GoToRing(RingIndex);
         }
@@ -51,7 +38,7 @@ public class AlchemyRingSubMenu : AlchemyRingMenu
             //_radialSubMenu.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, originalRotation + 90), 0.2f);
             _radialSubMenu.transform.DOScale(0.3f, 0.2f).OnComplete(() =>
             {
-                _radialSubMenu.ElementCollection = _subMenuElementCollection[_radialMenu.currentSelected];
+                _radialSubMenu.ElementCollection = _radialMenu.ElementCollection.Elements[_radialMenu.currentSelected].SubElement;
                 _radialSubMenu.BuildMenu();
                 _radialSubMenu.transform.DOScale(originalScale, 0.2f);
                 //_radialSubMenu.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, originalRotation), 0.2f);
@@ -66,6 +53,8 @@ public class AlchemyRingSubMenu : AlchemyRingMenu
     {
         _radialMenu.Interactable = true;
 
+        InitializeSelection();
+
         DOTween.To(() => _radialMenu.IconDistance, x => _radialMenu.IconDistance = x, selfIconDistance, 0.2f);
         DOTween.To(() => _radialMenu.CircleCutout, x => _radialMenu.CircleCutout = x, selfCircleCutout, 0.2f)
             .OnUpdate(() => _radialMenu.UpdateFractionAppereance())
@@ -76,8 +65,6 @@ public class AlchemyRingSubMenu : AlchemyRingMenu
             .OnUpdate(() => _radialSubMenu.UpdateFractionAppereance())
             .OnComplete(() => _radialSubMenu.UpdateFractionAppereance());
 
-
-        InitializeSelection();
         manager.ChangeButtonIcon(_radialMenu.currentFraction.Icon.sprite);
     }
 
