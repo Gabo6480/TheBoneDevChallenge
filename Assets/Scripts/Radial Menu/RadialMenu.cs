@@ -212,16 +212,11 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
             _fractions[currentSelected].SetIsSelected(false);
     }
 
-    void SetItemHoverAble(bool value)
+    public void SetItemHoverAble(bool value)
     {
         for (int j = 0; j < _fractions.Length; j++)
         {
             _fractions[j].HoverAble = value;
-
-            if (!value)
-                _fractions[j].SetIsSelected(false);
-            else
-                SelectItem(currentSelected);
         }
     }
 

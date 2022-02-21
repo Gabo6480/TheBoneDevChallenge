@@ -9,6 +9,8 @@ public abstract class AlchemyRingMenu : MonoBehaviour
 
     public int RingIndex = 0;
 
+    [SerializeField] public RadialMenu RadialSubMenu;
+
     public abstract void CommitCurrentItem();
     public abstract void SelectCurrentItem();
     public abstract void OnRingFocused();

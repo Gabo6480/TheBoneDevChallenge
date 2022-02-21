@@ -14,10 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _elements:
   - Inactive: 0
-    Name: Particulas Blancas
-    Icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    Name: 
+    Icon: {fileID: 21300000, guid: de7a1a6572f66bc4393dc46b94e2ad19, type: 3}
     SubElement: {fileID: 0}
   _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
     type: 3}
   _firstSelected: 0
   currentSelected: 0
+  _item:
+    Item: {fileID: 11400000, guid: ace9963be579e1d44b11ef14bcad6b91, type: 2}
+    Quantity: 1
+  Recipe: {fileID: 11400000, guid: c5dd0b51a18523d43be6f9f7e661fc60, type: 2}

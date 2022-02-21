@@ -20,11 +20,11 @@ MonoBehaviour:
   - Inactive: 0
     Name: Forjar
     Icon: {fileID: 21300000, guid: 50c56c928cc7f0b47abfc32678728572, type: 3}
-    SubElement: {fileID: 11400000, guid: 59623fd6d8922c94eb808e377c73d938, type: 2}
+    SubElement: {fileID: 11400000, guid: 3cc31d0f6f8b93e4ea2989030efa2408, type: 2}
   - Inactive: 0
     Name: Descubrir
     Icon: {fileID: 21300000, guid: 17a9f56b8817a3a488ded92a16845aee, type: 3}
-    SubElement: {fileID: 11400000, guid: 59623fd6d8922c94eb808e377c73d938, type: 2}
+    SubElement: {fileID: 11400000, guid: 3cc31d0f6f8b93e4ea2989030efa2408, type: 2}
   - Inactive: 0
     Name: Fusionar
     Icon: {fileID: 21300000, guid: 6847d64f50d164b48822fcbfdf959721, type: 3}
@@ -40,3 +40,4 @@ MonoBehaviour:
   _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
     type: 3}
   _firstSelected: 3
+  currentSelected: 3

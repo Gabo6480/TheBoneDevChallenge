@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 [System.Serializable]
 public struct RadialMenuElement
@@ -14,11 +15,11 @@ public struct RadialMenuElement
 [CreateAssetMenu(fileName = "RadialMenuElementCollection", menuName = "Radial Menu/Element Collection")]
 public class RadialMenuElementCollection : ScriptableObject
 {
-    [SerializeField] RadialMenuElement[] _elements;
+    [SerializeField] protected RadialMenuElement[] _elements;
     [SerializeField] RadialMenuFraction _radialMenuFractionPrefab;
     [SerializeField] int _firstSelected = 0;
 
-    public RadialMenuElement[] Elements { get { return _elements; } }
+    public virtual RadialMenuElement[] Elements { get { return _elements; } }
     public RadialMenuFraction RadialMenuFractionPrefab { get { return _radialMenuFractionPrefab; } }
     public int FirstSelected { get { return _firstSelected; } }
     
@@ -37,5 +38,34 @@ public class RadialMenuElementCollection : ScriptableObject
     public virtual void OnShrunk(AlchemyRingMenu rm)
     {
         rm.RadialMenuRef.DiselectCurrentFracction();
+    }
+    public virtual void OnSelectItem(AlchemyRingMenu rm)
+    {
+        if (rm.manager.currentRingMenuIndex != rm.RingIndex)
+        {
+            rm.RadialSubMenu.ElementCollection = rm.RadialMenuRef.ElementCollection.Elements[rm.RadialMenuRef.currentSelected].SubElement;
+            rm.RadialSubMenu.Interactable = true;
+            rm.RadialSubMenu.BuildMenu();
+            rm.RadialSubMenu.SetItemHoverAble(true);
+            rm.manager.GoToRing(rm.RingIndex);
+        }
+        else
+        {
+            float originalScale = rm.RadialSubMenu.transform.localScale.x;
+            float originalRotation = rm.RadialSubMenu.transform.eulerAngles.z;
+            //_radialSubMenu.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, originalRotation + 90), 0.2f);
+            rm.RadialSubMenu.transform.DOScale(0.3f, 0.2f).OnComplete(() =>
+            {
+                rm.RadialSubMenu.ElementCollection = rm.RadialMenuRef.ElementCollection.Elements[rm.RadialMenuRef.currentSelected].SubElement;
+                rm.RadialSubMenu.Interactable = true;
+                rm.RadialSubMenu.BuildMenu();
+                rm.RadialSubMenu.SetItemHoverAble(true);
+                rm.RadialSubMenu.transform.DOScale(originalScale, 0.2f);
+                //_radialSubMenu.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, originalRotation), 0.2f);
+            });
+
+        }
+
+        rm.manager.ChangeButtonIcon(rm.RadialMenuRef.currentFraction.Icon.sprite);
     }
 }

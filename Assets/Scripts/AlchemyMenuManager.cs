@@ -13,7 +13,7 @@ public class AlchemyMenuManager : MonoBehaviour
     [Space]
     [SerializeField] RectTransform _sliderParent;
     [SerializeField] Slider _slider;
-    [SerializeField] TMP_Text _sliderNumber;
+    [SerializeField] TMP_InputField _sliderNumber;
     [SerializeField] Button _sliderPlusButton;
     [SerializeField] Button _sliderMinusButton;
 
@@ -22,6 +22,11 @@ public class AlchemyMenuManager : MonoBehaviour
     [Header("Behaviour")]
     [SerializeField] float[] _scaleIncreaseStages;
     [SerializeField] int _mainScaleIndex = 2;
+
+    [Header("Inventory")]
+    [SerializeField] CraftComponent[] _startingItems;
+
+    Dictionary<GameItem, int> _inventory = new Dictionary<GameItem, int>();
 
     Color _clearTransparent = new Color(1,1,1,0);
 
@@ -42,14 +47,32 @@ public class AlchemyMenuManager : MonoBehaviour
 
         ScaleLayers();
 
+        foreach (var item in _startingItems)
+        {
+            _inventory.Add(item.Item, item.Quantity);
+        }
+
+
         _ringMenuLayers[currentRingMenuIndex].InitializeSelection();
 
-        _sliderNumber.text = _slider.value.ToString();
+        
         _sliderPlusButton.interactable = _slider.value < _slider.maxValue;
         _sliderMinusButton.interactable = _slider.value > _slider.minValue;
 
         _slider.onValueChanged.AddListener(v => {
             _sliderNumber.text = v.ToString();
+        });
+
+        _sliderNumber.onValueChanged.AddListener(s => {
+            int v = 0;
+
+            if (!int.TryParse(s, out v))
+                return;
+
+            v = Mathf.FloorToInt(Mathf.Clamp(v, _slider.minValue, _slider.maxValue));
+
+            _sliderNumber.text = v.ToString();
+            _slider.value = v;
 
             _sliderPlusButton.interactable = v < _slider.maxValue;
             _sliderMinusButton.interactable = v > _slider.minValue;
@@ -64,6 +87,8 @@ public class AlchemyMenuManager : MonoBehaviour
             if (_slider.value > _slider.minValue)
                 _slider.value = _slider.value - 1;
         });
+
+        _sliderNumber.text = _slider.value.ToString();
     }
 
     public void SelectRadialItem()
@@ -92,6 +117,25 @@ public class AlchemyMenuManager : MonoBehaviour
         ScaleLayers();
 
         _backButton.gameObject.SetActive(currentRingMenuIndex > 0);
+    }
+
+    public void calculateRecipe(CraftComponent[] craftComponents)
+    {
+        if (craftComponents == null || craftComponents.Length == 0)
+            return;
+
+        int result = int.MaxValue;
+
+        foreach(var item in craftComponents)
+        {
+            int r = _inventory[item.Item] / item.Quantity;
+
+            result = result > r ? r : result;
+        }
+
+        _slider.value = result > 0 ? 1 : 0;
+        //_slider.minValue = result > 0 ? 1 : 0;
+        _slider.maxValue = result;
     }
 
     void AnimateSliderParent(float targetPos)
