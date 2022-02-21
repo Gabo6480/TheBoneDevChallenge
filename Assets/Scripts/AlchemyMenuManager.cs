@@ -18,6 +18,7 @@ public class AlchemyMenuManager : MonoBehaviour
     [SerializeField] Button _sliderMinusButton;
     [Space]
     [SerializeField] RectTransform _overlayParent;
+    [SerializeField] Transform _overlayLightning;
     [SerializeField] Button _thanksButton;
     [SerializeField] Image _resultImage;
     [SerializeField] TMP_Text _resultText;
@@ -50,6 +51,7 @@ public class AlchemyMenuManager : MonoBehaviour
 
         _backButton.gameObject.SetActive(false);
         _overlayParent.gameObject.SetActive(false);
+        _overlayLightning.gameObject.SetActive(false);
 
         ScaleLayers();
 
@@ -127,21 +129,53 @@ public class AlchemyMenuManager : MonoBehaviour
 
     public void CentralButtonRelease()
     {
-        Debug.Log("Hola");
+        _ringMenuLayers[currentRingMenuIndex].OnRelease();
+    }
+
+    public void CentralButtonHold()
+    {
+        _ringMenuLayers[currentRingMenuIndex].OnHold();
     }
 
     void ShowOverlay(Sprite image, string name, int quantity)
     {
-        _overlayParent.gameObject.SetActive(true);
+        _overlayLightning.gameObject.SetActive(true);
+        _overlayLightning.localScale = Vector3.one * 100;
 
-        _resultImage.sprite = image;
+        _overlayLightning.DOScale(1000, 1f)
+            .OnComplete(() => { 
+                _overlayParent.gameObject.SetActive(true);
 
-        _resultText.text = name + "\nx" + quantity.ToString();
+                _resultImage.sprite = image;
+
+                _resultText.text = name + "\nx" + quantity.ToString();
+                _overlayLightning.gameObject.SetActive(false);
+            });
     }
 
     public void HideOverlay()
     {
         _overlayParent.gameObject.SetActive(false);
+    }
+    Tween craftTween;
+    float originalRotation;
+    public void AnimateCraft(CraftComponent[] craftComponents, CraftComponent result)
+    {
+        originalRotation = _ringMenuLayers[currentRingMenuIndex].RadialSubMenu.transform.localRotation.z;
+        craftTween = _ringMenuLayers[currentRingMenuIndex].RadialSubMenu.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, originalRotation + 180), 1f)
+            .OnComplete(() => {
+                CraftRecipe(craftComponents, result);
+                _ringMenuLayers[currentRingMenuIndex].RadialSubMenu.transform.localRotation = Quaternion.Euler(0, 0, originalRotation);
+            });
+    }
+
+    public void KillAnimateCraft()
+    {
+        if (craftTween == null)
+            return;
+
+        craftTween.Kill();
+        _ringMenuLayers[currentRingMenuIndex].RadialSubMenu.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, originalRotation), 0.2f);
     }
 
     public void calculateRecipe(CraftComponent[] craftComponents)
@@ -178,10 +212,16 @@ public class AlchemyMenuManager : MonoBehaviour
 
         foreach (var item in craftComponents)
         {
+            if (_inventory[item.Item] < item.Quantity * quantity)
+                return;
+        }
+
+        foreach (var item in craftComponents)
+        {
             _inventory[item.Item] -= item.Quantity * quantity;
         }
 
-            if (_inventory.ContainsKey(result.Item))
+        if (_inventory.ContainsKey(result.Item))
             _inventory[result.Item] += result.Quantity * quantity;
         else
             _inventory.Add(result.Item, result.Quantity * quantity);

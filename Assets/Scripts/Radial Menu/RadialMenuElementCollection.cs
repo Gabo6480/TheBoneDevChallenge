@@ -30,6 +30,14 @@ public class RadialMenuElementCollection : ScriptableObject
     {
         rm.manager.GoToRing(rm.RingIndex + 1);
     }
+    public virtual void OnHold(AlchemyRingMenu rm)
+    {
+
+    }
+    public virtual void OnRelease(AlchemyRingMenu rm)
+    {
+
+    }
     public virtual void OnFocused(AlchemyRingMenu rm)
     {
         if (rm.RadialMenuRef.currentFraction != null)

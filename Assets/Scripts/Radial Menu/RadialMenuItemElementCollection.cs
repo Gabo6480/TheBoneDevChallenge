@@ -33,7 +33,16 @@ public class RadialMenuItemElementCollection : RadialMenuElementCollection
 
     public override void OnCommit(AlchemyRingMenu rm)
     {
-        rm.manager.CraftRecipe(Recipe.Recipe, _item);
+        //base.OnCommit(rm);
+    }
+
+    public override void OnRelease(AlchemyRingMenu rm)
+    {
+        rm.manager.KillAnimateCraft();
+    }
+    public override void OnHold(AlchemyRingMenu rm)
+    {
+        rm.manager.AnimateCraft(Recipe.Recipe, _item);
     }
 
     public override void OnFocused(AlchemyRingMenu rm)

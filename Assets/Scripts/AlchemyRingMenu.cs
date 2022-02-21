@@ -16,6 +16,14 @@ public abstract class AlchemyRingMenu : MonoBehaviour
     public abstract void OnRingFocused();
     public abstract void OnRingShrunk();
     public abstract void OnRingExpand();
+    public  void OnHold()
+    {
+        RadialMenuRef.ElementCollection.OnHold(this);
+    }
+    public  void OnRelease()
+    {
+        RadialMenuRef.ElementCollection.OnRelease(this);
+    }
 
     public void InitializeSelection()
     {
