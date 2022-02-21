@@ -28,8 +28,10 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
 
     [SerializeField] UnityEvent<int> _onValueChange;
 
+    public int currentSelected { get => ElementCollection.currentSelected; private set => ElementCollection.currentSelected = value; }
+
     float _stepAngle;
-    public int currentSelected { get; private set; } = -1;
+    
     public int elementCount { get { return ElementCollection.Elements.Length; } }
     public int activeElementCount { get {
             int i = 0;
@@ -40,7 +42,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
             }
             return i; 
         } }
-    public RadialMenuFraction currentFraction { get { return _fractions[currentSelected]; } }
+    public RadialMenuFraction currentFraction { get { return _fractions.Length != 0 ? _fractions[currentSelected] : null; } }
     bool _isDragging = false;
 
     private void Awake()
@@ -117,10 +119,10 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
             SetFractionButtonListener(i);
         }
 
-        if(currentSelected != -1)
-            RotateElementParent(-(currentSelected - 1) * _stepAngle);
+        if (currentSelected != -1)
+            _elementParent.localRotation = Quaternion.Euler(0, 0, -(currentSelected - 1) * _stepAngle);
         else
-            RotateElementParent(-(ElementCollection.FirstSelected - 1) * _stepAngle);
+            _elementParent.localRotation = Quaternion.Euler(0, 0, -(ElementCollection.FirstSelected - 1) * _stepAngle);
     }
 
     void SetFractionAppereance(RadialMenuFraction fraction, RadialMenuElement element, int index, float stepAngle)
@@ -178,7 +180,7 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         index = NormalizeIndex(index);
 
-        if (currentSelected == index && (_fractions[index].IsSelected || !_fractions[index].gameObject.activeInHierarchy))
+        if (currentSelected == index && (_fractions[index].IsSelected || !_fractions[index].gameObject.activeInHierarchy) || _fractions.Length == 0)
             return;
 
         if (!_fractions[index].gameObject.activeInHierarchy)
@@ -206,7 +208,8 @@ public class RadialMenu : MonoBehaviour, IDragHandler, IEndDragHandler
     }
     public void DiselectCurrentFracction()
     {
-        _fractions[currentSelected].SetIsSelected(false);
+        if(_fractions.Length != 0)
+            _fractions[currentSelected].SetIsSelected(false);
     }
 
     void SetItemHoverAble(bool value)

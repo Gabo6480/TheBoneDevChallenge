@@ -224,7 +224,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _text: {fileID: 4397144405816762052}
   _textRect: {fileID: 4430445464038564151}
-  _curvature: 400
+  _curvature: 360
 --- !u!114 &5564561121134239423
 MonoBehaviour:
   m_ObjectHideFlags: 0

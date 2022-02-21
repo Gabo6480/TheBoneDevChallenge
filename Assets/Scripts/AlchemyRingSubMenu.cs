@@ -16,18 +16,18 @@ public class AlchemyRingSubMenu : AlchemyRingMenu
 
     private void OnValidate()
     {
-        if (_radialMenu == null)
-            _radialMenu = GetComponent<RadialMenu>();
+        if (RadialMenuRef == null)
+            RadialMenuRef = GetComponent<RadialMenu>();
     }
     public override void CommitCurrentItem()
     {
-        manager.GoToRing(RingIndex + 1);
+        RadialMenuRef.ElementCollection.OnCommit(this);
     }
     public override void SelectCurrentItem()
     {
         if (manager.currentRingMenuIndex != RingIndex)
         {
-            _radialSubMenu.ElementCollection = _radialMenu.ElementCollection.Elements[_radialMenu.currentSelected].SubElement;
+            _radialSubMenu.ElementCollection = RadialMenuRef.ElementCollection.Elements[RadialMenuRef.currentSelected].SubElement;
             _radialSubMenu.BuildMenu();
             manager.GoToRing(RingIndex);
         }
@@ -38,7 +38,7 @@ public class AlchemyRingSubMenu : AlchemyRingMenu
             //_radialSubMenu.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, originalRotation + 90), 0.2f);
             _radialSubMenu.transform.DOScale(0.3f, 0.2f).OnComplete(() =>
             {
-                _radialSubMenu.ElementCollection = _radialMenu.ElementCollection.Elements[_radialMenu.currentSelected].SubElement;
+                _radialSubMenu.ElementCollection = RadialMenuRef.ElementCollection.Elements[RadialMenuRef.currentSelected].SubElement;
                 _radialSubMenu.BuildMenu();
                 _radialSubMenu.transform.DOScale(originalScale, 0.2f);
                 //_radialSubMenu.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, originalRotation), 0.2f);
@@ -46,36 +46,36 @@ public class AlchemyRingSubMenu : AlchemyRingMenu
 
         }
 
-        manager.ChangeButtonIcon(_radialMenu.currentFraction.Icon.sprite);
+        manager.ChangeButtonIcon(RadialMenuRef.currentFraction.Icon.sprite);
     }
 
     public override void OnRingFocused()
     {
-        _radialMenu.Interactable = true;
+        RadialMenuRef.Interactable = true;
 
         InitializeSelection();
 
-        DOTween.To(() => _radialMenu.IconDistance, x => _radialMenu.IconDistance = x, selfIconDistance, 0.2f);
-        DOTween.To(() => _radialMenu.CircleCutout, x => _radialMenu.CircleCutout = x, selfCircleCutout, 0.2f)
-            .OnUpdate(() => _radialMenu.UpdateFractionAppereance())
-            .OnComplete(() => _radialMenu.UpdateFractionAppereance());
+        DOTween.To(() => RadialMenuRef.IconDistance, x => RadialMenuRef.IconDistance = x, selfIconDistance, 0.2f);
+        DOTween.To(() => RadialMenuRef.CircleCutout, x => RadialMenuRef.CircleCutout = x, selfCircleCutout, 0.2f)
+            .OnUpdate(() => RadialMenuRef.UpdateFractionAppereance())
+            .OnComplete(() => RadialMenuRef.UpdateFractionAppereance());
         
         DOTween.To(() => _radialSubMenu.IconDistance, x => _radialSubMenu.IconDistance = x, subIconDistance, 0.2f);
         DOTween.To(() => _radialSubMenu.CircleCutout, x => _radialSubMenu.CircleCutout = x, subCircleCutout, 0.2f)
             .OnUpdate(() => _radialSubMenu.UpdateFractionAppereance())
             .OnComplete(() => _radialSubMenu.UpdateFractionAppereance());
 
-        manager.ChangeButtonIcon(_radialMenu.currentFraction.Icon.sprite);
+        RadialMenuRef.ElementCollection.OnFocused(this);
     }
 
     public override void OnRingShrunk()
     {
         //_radialMenu.Interactable = false;
-        _radialMenu.DiselectCurrentFracction();
+        RadialMenuRef.ElementCollection.OnShrunk(this);
     }
 
     public override void OnRingExpand()
     {
-        _radialMenu.Interactable = false;
+        RadialMenuRef.Interactable = false;
     }
 }

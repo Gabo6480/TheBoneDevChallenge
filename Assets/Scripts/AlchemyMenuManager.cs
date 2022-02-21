@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
 
 public class AlchemyMenuManager : MonoBehaviour
 {
     [SerializeField] Button _centralButton;
     [SerializeField] Button _backButton;
     [SerializeField] Image _centralButtonIcon;
+    [Space]
+    [SerializeField] RectTransform _sliderParent;
+    [SerializeField] Slider _slider;
+    [SerializeField] TMP_Text _sliderNumber;
+    [SerializeField] Button _sliderPlusButton;
+    [SerializeField] Button _sliderMinusButton;
 
     [SerializeField] AlchemyRingMenu[] _ringMenuLayers;
 
@@ -36,6 +43,27 @@ public class AlchemyMenuManager : MonoBehaviour
         ScaleLayers();
 
         _ringMenuLayers[currentRingMenuIndex].InitializeSelection();
+
+        _sliderNumber.text = _slider.value.ToString();
+        _sliderPlusButton.interactable = _slider.value < _slider.maxValue;
+        _sliderMinusButton.interactable = _slider.value > _slider.minValue;
+
+        _slider.onValueChanged.AddListener(v => {
+            _sliderNumber.text = v.ToString();
+
+            _sliderPlusButton.interactable = v < _slider.maxValue;
+            _sliderMinusButton.interactable = v > _slider.minValue;
+        });
+
+        _sliderPlusButton.onClick.AddListener(() => {
+            if(_slider.value < _slider.maxValue)
+                _slider.value = _slider.value + 1;
+        });
+
+        _sliderMinusButton.onClick.AddListener(() => {
+            if (_slider.value > _slider.minValue)
+                _slider.value = _slider.value - 1;
+        });
     }
 
     public void SelectRadialItem()
@@ -66,22 +94,19 @@ public class AlchemyMenuManager : MonoBehaviour
         _backButton.gameObject.SetActive(currentRingMenuIndex > 0);
     }
 
-    //public void GoToRing(AlchemyRingMenu ring)
-    //{
-    //    int index = -1;
-    //
-    //    for (int i = 0; i < _ringMenuLayers.Length; i++)
-    //    {
-    //        if (_ringMenuLayers[i] == ring)
-    //        {
-    //            index = i;
-    //            break;
-    //        }
-    //    }
-    //
-    //    if (index != -1)
-    //        GoToRing(index);
-    //}
+    void AnimateSliderParent(float targetPos)
+    {
+        _sliderParent.DOAnchorPosY(targetPos, 0.3f);
+    }
+
+    public void AnimateSliderIn()
+    {
+        AnimateSliderParent(0f);
+    }
+    public void AnimateSliderOut()
+    {
+        AnimateSliderParent(-300f);
+    }
 
     public void PreviousRing()
     {

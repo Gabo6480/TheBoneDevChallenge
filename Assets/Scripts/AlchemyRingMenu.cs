@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class AlchemyRingMenu : MonoBehaviour
 {
-    [SerializeField] protected RadialMenu _radialMenu;
+    [SerializeField] public RadialMenu RadialMenuRef;
     public AlchemyMenuManager manager;
 
     public int RingIndex = 0;
@@ -17,15 +17,15 @@ public abstract class AlchemyRingMenu : MonoBehaviour
 
     public void InitializeSelection()
     {
-        _radialMenu.InitializeSelection();
+        RadialMenuRef.InitializeSelection();
     }
 
     public void SelectionUp()
     {
-        _radialMenu.SelectionUp();
+        RadialMenuRef.SelectionUp();
     }
     public void SelectionDown()
     {
-        _radialMenu.SelectionDown();
+        RadialMenuRef.SelectionDown();
     }
 }

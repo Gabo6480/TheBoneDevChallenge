@@ -28,7 +28,7 @@ MonoBehaviour:
   - Inactive: 0
     Name: Fusionar
     Icon: {fileID: 21300000, guid: 6847d64f50d164b48822fcbfdf959721, type: 3}
-    SubElement: {fileID: 11400000, guid: 1203f83bae996874dbf791bc8b32c0cf, type: 2}
+    SubElement: {fileID: 11400000, guid: f2972fc897aed9e4fb4484942db2ccb7, type: 2}
   - Inactive: 1
     Name: 
     Icon: {fileID: 0}
