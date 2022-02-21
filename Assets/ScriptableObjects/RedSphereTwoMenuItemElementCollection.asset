@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2248f77f8f1ca334baa40c1d481acaba, type: 3}
+  m_Name: RedSphereTwoMenuItemElementCollection
+  m_EditorClassIdentifier: 
+  _elements:
+  - Inactive: 0
+    Name: 
+    Icon: {fileID: 670836504, guid: 5e0ffd1ff755bcf4b997b27c63819059, type: 3}
+    SubElement: {fileID: 0}
+  _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
+    type: 3}
+  _firstSelected: 0
+  currentSelected: 0
+  _item:
+    Item: {fileID: 11400000, guid: e76dd66cb0ca7bb4e8651cca35c55537, type: 2}
+    Quantity: 1
+  Recipe: {fileID: 11400000, guid: 44f1b1eae7439654698b1734a8ff5c5a, type: 2}

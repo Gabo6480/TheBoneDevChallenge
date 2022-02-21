@@ -46,6 +46,7 @@ public class RadialMenuElementCollection : ScriptableObject
             rm.RadialSubMenu.ElementCollection = rm.RadialMenuRef.ElementCollection.Elements[rm.RadialMenuRef.currentSelected].SubElement;
             rm.RadialSubMenu.Interactable = true;
             rm.RadialSubMenu.BuildMenu();
+            rm.RadialSubMenu.gameObject.SetActive(true);
             rm.RadialSubMenu.SetItemHoverAble(true);
             rm.manager.GoToRing(rm.RingIndex);
         }
@@ -59,6 +60,7 @@ public class RadialMenuElementCollection : ScriptableObject
                 rm.RadialSubMenu.ElementCollection = rm.RadialMenuRef.ElementCollection.Elements[rm.RadialMenuRef.currentSelected].SubElement;
                 rm.RadialSubMenu.Interactable = true;
                 rm.RadialSubMenu.BuildMenu();
+                rm.RadialSubMenu.gameObject.SetActive(true);
                 rm.RadialSubMenu.SetItemHoverAble(true);
                 rm.RadialSubMenu.transform.DOScale(originalScale, 0.2f);
                 //_radialSubMenu.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, originalRotation), 0.2f);

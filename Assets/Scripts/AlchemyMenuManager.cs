@@ -16,6 +16,11 @@ public class AlchemyMenuManager : MonoBehaviour
     [SerializeField] TMP_InputField _sliderNumber;
     [SerializeField] Button _sliderPlusButton;
     [SerializeField] Button _sliderMinusButton;
+    [Space]
+    [SerializeField] RectTransform _overlayParent;
+    [SerializeField] Button _thanksButton;
+    [SerializeField] Image _resultImage;
+    [SerializeField] TMP_Text _resultText;
 
     [SerializeField] AlchemyRingMenu[] _ringMenuLayers;
 
@@ -44,6 +49,7 @@ public class AlchemyMenuManager : MonoBehaviour
         }
 
         _backButton.gameObject.SetActive(false);
+        _overlayParent.gameObject.SetActive(false);
 
         ScaleLayers();
 
@@ -119,6 +125,25 @@ public class AlchemyMenuManager : MonoBehaviour
         _backButton.gameObject.SetActive(currentRingMenuIndex > 0);
     }
 
+    public void CentralButtonRelease()
+    {
+        Debug.Log("Hola");
+    }
+
+    void ShowOverlay(Sprite image, string name, int quantity)
+    {
+        _overlayParent.gameObject.SetActive(true);
+
+        _resultImage.sprite = image;
+
+        _resultText.text = name + "\nx" + quantity.ToString();
+    }
+
+    public void HideOverlay()
+    {
+        _overlayParent.gameObject.SetActive(false);
+    }
+
     public void calculateRecipe(CraftComponent[] craftComponents)
     {
         if (craftComponents == null || craftComponents.Length == 0)
@@ -128,6 +153,12 @@ public class AlchemyMenuManager : MonoBehaviour
 
         foreach(var item in craftComponents)
         {
+            if (!_inventory.ContainsKey(item.Item))
+            {
+                result = 0;
+                break;
+            }
+
             int r = _inventory[item.Item] / item.Quantity;
 
             result = result > r ? r : result;
@@ -136,6 +167,28 @@ public class AlchemyMenuManager : MonoBehaviour
         _slider.value = result > 0 ? 1 : 0;
         //_slider.minValue = result > 0 ? 1 : 0;
         _slider.maxValue = result;
+    }
+
+    public void CraftRecipe(CraftComponent[] craftComponents, CraftComponent result)
+    {
+        if (craftComponents == null || craftComponents.Length == 0)
+            return;
+
+        int quantity = Mathf.FloorToInt(_slider.value);
+
+        foreach (var item in craftComponents)
+        {
+            _inventory[item.Item] -= item.Quantity * quantity;
+        }
+
+            if (_inventory.ContainsKey(result.Item))
+            _inventory[result.Item] += result.Quantity * quantity;
+        else
+            _inventory.Add(result.Item, result.Quantity * quantity);
+
+        ShowOverlay(result.Item.Icon, result.Item.Name, result.Quantity * quantity);
+
+        calculateRecipe(craftComponents);
     }
 
     void AnimateSliderParent(float targetPos)

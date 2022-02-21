@@ -16,21 +16,28 @@ MonoBehaviour:
   - Inactive: 0
     Name: Rojo
     Icon: {fileID: -1077479583, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
+    SubElement: {fileID: 11400000, guid: 6d533c29a3c9d93498c2990740fa5b7d, type: 2}
   - Inactive: 0
     Name: Morado
     Icon: {fileID: -1909705342, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
+    SubElement: {fileID: 0}
   - Inactive: 0
     Name: Azul
     Icon: {fileID: -1511108627, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
+    SubElement: {fileID: 0}
   - Inactive: 0
     Name: Cyan
     Icon: {fileID: 561684624, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
+    SubElement: {fileID: 0}
   - Inactive: 0
     Name: Verde
     Icon: {fileID: 413348349, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
+    SubElement: {fileID: 0}
   - Inactive: 0
     Name: Amarillo
     Icon: {fileID: 1878970778, guid: 1169e969fa8927c4bb97786714325aa2, type: 3}
+    SubElement: {fileID: 0}
   _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
     type: 3}
   _firstSelected: 1
+  currentSelected: 0

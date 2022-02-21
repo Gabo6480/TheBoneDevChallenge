@@ -28,12 +28,12 @@ public class RadialMenuItemElementCollection : RadialMenuElementCollection
             return;
 
         _elements[0].Icon = _item.Item.Icon;
-        _elements[0].Name = _item.Item.Name;
+        //_elements[0].Name = _item.Item.Name;
     }
 
     public override void OnCommit(AlchemyRingMenu rm)
     {
-        Debug.Log("Fart");
+        rm.manager.CraftRecipe(Recipe.Recipe, _item);
     }
 
     public override void OnFocused(AlchemyRingMenu rm)
@@ -57,6 +57,7 @@ public class RadialMenuItemElementCollection : RadialMenuElementCollection
             rm.RadialSubMenu.ElementCollection = Recipe;
             rm.RadialSubMenu.Interactable = false;
             rm.RadialSubMenu.BuildMenu();
+            rm.RadialSubMenu.gameObject.SetActive(true);
             rm.RadialSubMenu.SetItemHoverAble(false);
             rm.manager.GoToRing(rm.RingIndex);
         }
@@ -70,6 +71,7 @@ public class RadialMenuItemElementCollection : RadialMenuElementCollection
                 rm.RadialSubMenu.ElementCollection = Recipe;
                 rm.RadialSubMenu.Interactable = false;
                 rm.RadialSubMenu.BuildMenu();
+                rm.RadialSubMenu.gameObject.SetActive(true);
                 rm.RadialSubMenu.SetItemHoverAble(false);
                 rm.RadialSubMenu.transform.DOScale(originalScale, 0.2f);
                 //_radialSubMenu.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, originalRotation), 0.2f);

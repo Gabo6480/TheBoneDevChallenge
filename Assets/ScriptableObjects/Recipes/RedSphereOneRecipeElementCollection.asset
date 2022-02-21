@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd167fe5393712941b1e943efedd3c39, type: 3}
+  m_Name: RedSphereOneRecipeElementCollection
+  m_EditorClassIdentifier: 
+  _elements:
+  - Inactive: 0
+    Name: 
+    Icon: {fileID: 1873930509, guid: ff5309b4ef46ea348bdf27097ce3ea97, type: 3}
+    SubElement: {fileID: 0}
+  - Inactive: 0
+    Name: 
+    Icon: {fileID: 373390132, guid: ff5309b4ef46ea348bdf27097ce3ea97, type: 3}
+    SubElement: {fileID: 0}
+  - Inactive: 0
+    Name: 
+    Icon: {fileID: 1741428111, guid: ff5309b4ef46ea348bdf27097ce3ea97, type: 3}
+    SubElement: {fileID: 0}
+  - Inactive: 0
+    Name: 
+    Icon: {fileID: -1267095820, guid: ff5309b4ef46ea348bdf27097ce3ea97, type: 3}
+    SubElement: {fileID: 0}
+  _radialMenuFractionPrefab: {fileID: 7754129164239047785, guid: 22d0947bf96b539419f28ef6a5ac2075,
+    type: 3}
+  _firstSelected: 0
+  currentSelected: -1
+  Recipe:
+  - Item: {fileID: 11400000, guid: 0aaf9604665edc448905ed469abbf7ab, type: 2}
+    Quantity: 1
+  - Item: {fileID: 11400000, guid: f80464989acb2ce419f27d251481b0d8, type: 2}
+    Quantity: 1
+  - Item: {fileID: 11400000, guid: 68fb971a4b35b88468fb0d9b76fcffbc, type: 2}
+    Quantity: 1
+  - Item: {fileID: 11400000, guid: b6780226ba96f6e439b2721e1e61caf0, type: 2}
+    Quantity: 1
